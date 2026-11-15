@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0e1014">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Player</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Crect%20width='24'%20height='24'%20rx='6'%20fill='%230e1014'/%3E%3Cpath%20d='M9%206v12l10-6z'%20fill='%238b7cf6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg class="ic" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      </span>
+      <h1>Player</h1>
+    </div>
+  </header>
+
+  <main id="main" class="main">
+
+    <!-- ============ Login view ============ -->
+    <section id="view-login" class="view view-login" hidden>
+      <form id="login-form" class="login-card" autocomplete="off">
+        <h2>Sign in</h2>
+        <p class="login-hint">This server requires an access token.</p>
+        <label class="field-label" for="login-token">Access token</label>
+        <input id="login-token" type="password" autocomplete="current-password" placeholder="Paste your token" required>
+        <button id="login-btn" class="btn primary block" type="submit">Sign in</button>
+        <p id="login-error" class="form-error" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <!-- ============ Library view ============ -->
+    <section id="view-library" class="view view-library" hidden>
+      <form id="dl-form" class="dl-form" autocomplete="off">
+        <input id="dl-url" type="text" inputmode="url" spellcheck="false"
+               placeholder="Paste a YouTube link (watch / youtu.be / shorts)" aria-label="YouTube URL">
+        <button id="dl-btn" class="btn primary" type="submit">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          <span id="dl-btn-label">Download</span>
+        </button>
+      </form>
+      <p id="dl-error" class="form-error" role="alert" hidden></p>
+
+      <section id="jobs-section" class="jobs" hidden>
+        <h2 class="section-title">Downloads</h2>
+        <ul id="jobs-list" class="jobs-list"></ul>
+      </section>
+
+      <section class="library">
+        <h2 class="section-title">Library</h2>
+        <div id="library-grid" class="grid"></div>
+        <p id="library-empty" class="empty" hidden>Nothing downloaded yet — paste a link above to get started.</p>
+      </section>
+    </section>
+
+    <!-- ============ Video view ============ -->
+    <section id="view-video" class="view view-video" hidden>
+      <div class="video-top">
+        <button id="btn-back" class="btn ghost" type="button">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+          <span>Library</span>
+        </button>
+        <h2 id="video-title" class="video-title"></h2>
+      </div>
+      <div class="video-stage">
+        <video id="video" controls playsinline preload="metadata"></video>
+      </div>
+      <p id="video-meta" class="video-meta"></p>
+    </section>
+
+  </main>
+
+  <!-- ============ Persistent mini-player (outside the swapped views) ============ -->
+  <footer id="mini-player" class="mini-player" aria-label="Audio player">
+    <div class="mp-track">
+      <span id="mp-title" class="mp-title">Nothing playing</span>
+    </div>
+
+    <div class="mp-controls">
+      <button id="mp-prev" class="mp-btn" type="button" aria-label="Previous track">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6h2.6v12H7z"/><path d="M20 6v12l-9.2-6z"/></svg>
+      </button>
+      <button id="mp-play" class="mp-btn mp-main" type="button" aria-label="Play">
+        <svg class="ic ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="ic ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"/></svg>
+      </button>
+      <button id="mp-next" class="mp-btn" type="button" aria-label="Next track">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.4 6H17v12h-2.6z"/><path d="M4 6v12l9.2-6z"/></svg>
+      </button>
+    </div>
+
+    <div class="mp-seek">
+      <span id="mp-cur" class="mp-time">0:00</span>
+      <input id="mp-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Seek position">
+      <span id="mp-dur" class="mp-time">0:00</span>
+    </div>
+
+    <button id="mp-mode" class="mp-mode" type="button" aria-pressed="false" title="Queue mode">
+      <svg class="ic ic-seq" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+      <svg class="ic ic-shuf" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+      <span id="mp-mode-label">Sequential</span>
+    </button>
+  </footer>
+
+  <!-- The ONE and ONLY audio element. Declared once, never recreated. -->
+  <audio id="audio" class="audio-el" preload="metadata"></audio>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
